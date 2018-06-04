@@ -1,0 +1,21 @@
+declare
+    i number := 1;
+begin
+    loop
+        Insert into MEMBER values 
+        ('hihiroo'||i,
+        'MTIzNA==',
+        '±è¾È³ç'||i,
+        'F',
+        43,
+        'hihiroo@naver.com',
+        '01023454635','°æ±âµµ ½ÃÈï½Ã',
+        '¿îµ¿,¿©Çà',sysdate
+        );
+        i := i+1;
+    exit when i>50;
+    end loop;
+end;
+/
+select * from member;
+commit;

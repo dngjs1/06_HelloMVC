@@ -1,0 +1,54 @@
+페이징 처리
+필요변수
+1. cPage : 현재페이지
+2. numPerPage : 현재페이지에서 보여줄 자료수
+3. totalMember : DB에 있는 총 자료수
+4. totalPage : 총 페이지의 수
+5. pageBarSize : 페이지가 표시되는 갯수
+	[이전] 1234 [다음]	
+6. pageNo : 시작페이지, 페이지 숫자를 기록하는 변수, 해당 페이지 블록을 의미.
+7. pageEnd : 페이지의 끝번호
+8. pageBar : 페이지바를 구성하는 변수. 태그들이 누적되어 표시되게하는 변수
+
+페이지 계산공식
+1. totalPage : (int)Math.ceil((double)totalMember/numPerPage)  ceil : 무조건 올림
+2. 시작, 끝 구하기(Rnum)
+   시작 : (cPage-1)*numPerPage+1
+   끝 : cPage*numPerPage
+3. pageNo : 페이지바에서 시작번호
+   ((cPage-1)/pageBarSize)*pageBarSize+1
+4. 마지막 페이지 구하기 : pageEnd=pageNo+pageBarSize-1
+5. while(!(pageNo>pageEnd || pageNo>totalPage)) //페이지바에 숫자넣기
+6. 자료수만큼 자료를 불러오는 쿼리
+selectPage=select * from 
+(select rownum as rnum, a.* from 
+(select * from member a order by a.enrolldate desc)a) 
+where rnum between ? and ?
+
+페이징 처리 순서 정리
+1. cPage / numPerPage값을 구하기 -parameter값 또는 초기화.
+2. totalMember값 totalPage값 구하기
+	-totalMember값 select count(*) as cnt from member.
+3. 화면에 표시될 페이지 바를 세팅
+	1)페이지바 구성하는 html구문을 저장할 변수선언 -String pageBar
+	2)페이지 바의 구성크기 설정 - int pageBarSize
+	3)페이지 바의 시작번호 구하기
+		-int pageNo;
+		-공식에 의해 초기화
+	4)페이지 바의 끝번호 구하기
+		-int pageEnd;
+		-공식에 의해 초기화
+	5)pageBar에 들어갈 html 구문을 작성
+		a) [이전] 버튼 작성하여 pageBar에 누적
+			-<a href='이동주소'>[이전]</a>
+		b) 중간에 들어간 페이지 번호 작성하여 누적
+			-while문을 이용하여 pageNo를 증가시키면서 작성
+		c)[다음]버튼 작성
+4. 작성된 자료를 view에 넘겨줌.
+	1) Member자료 전송
+	2) pageBar자료 전송
+	3) cPage, numPerPage 전송
+5. view로 forward 하면 끝!
+
+----------- view화면에서 pageBar 추가------------
+		
